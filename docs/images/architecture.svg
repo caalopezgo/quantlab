@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="420" viewBox="0 0 1100 420">
+  <rect width="1100" height="420" fill="#F4F6F8"/>
+  <text x="550" y="36" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1C2430">Quant Lab  data ’ intent ’ risk ’ broker</text>
+
+  <!-- pipeline -->
+  <g font-family="Figtree, Helvetica, sans-serif" font-size="13" fill="#1C2430">
+    <rect x="30" y="70" width="150" height="70" rx="8" fill="#E4F0EF" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="105" y="110" text-anchor="middle">DATA</text>
+
+    <rect x="210" y="70" width="150" height="70" rx="8" fill="#fff" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="285" y="110" text-anchor="middle">FEATURES</text>
+
+    <rect x="390" y="70" width="150" height="70" rx="8" fill="#fff" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="465" y="110" text-anchor="middle">STRATEGY</text>
+
+    <rect x="570" y="70" width="150" height="70" rx="8" fill="#fff" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="645" y="110" text-anchor="middle">PORTFOLIO</text>
+
+    <rect x="750" y="70" width="150" height="70" rx="8" fill="#E4F0EF" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="825" y="110" text-anchor="middle">RISK</text>
+
+    <rect x="930" y="70" width="140" height="70" rx="8" fill="#fff" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="1000" y="110" text-anchor="middle">BROKER</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#1F6F6A" stroke-width="2" fill="#1F6F6A">
+    <path d="M180 105 H205" marker-end="url(#arrow)"/>
+    <path d="M360 105 H385" marker-end="url(#arrow)"/>
+    <path d="M540 105 H565" marker-end="url(#arrow)"/>
+    <path d="M720 105 H745" marker-end="url(#arrow)"/>
+    <path d="M900 105 H925" marker-end="url(#arrow)"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z"/>
+    </marker>
+  </defs>
+
+  <!-- lower row -->
+  <g font-family="Figtree, Helvetica, sans-serif" font-size="13" fill="#1C2430">
+    <rect x="30" y="200" width="320" height="90" rx="8" fill="#fff" stroke="#5C6B7A" stroke-width="1.5"/>
+    <text x="190" y="240" text-anchor="middle" font-size="14">UI (Streamlit)</text>
+    <text x="190" y="262" text-anchor="middle" fill="#5C6B7A" font-size="12">view / control only</text>
+
+    <rect x="390" y="200" width="320" height="90" rx="8" fill="#fff" stroke="#5C6B7A" stroke-width="1.5"/>
+    <text x="550" y="240" text-anchor="middle" font-size="14">SERVICE LAYER</text>
+    <text x="550" y="262" text-anchor="middle" fill="#5C6B7A" font-size="12">research · signal · portfolio</text>
+
+    <rect x="750" y="200" width="320" height="90" rx="8" fill="#E4F0EF" stroke="#1F6F6A" stroke-width="2"/>
+    <text x="910" y="240" text-anchor="middle" font-size="14">QUANT ENGINE</text>
+    <text x="910" y="262" text-anchor="middle" fill="#5C6B7A" font-size="12">testable Python package</text>
+  </g>
+
+  <text x="550" y="340" text-anchor="middle" font-family="Figtree, Helvetica, sans-serif" font-size="13" fill="#5C6B7A">
+    V0.1: Yahoo data · PaperBroker · next-open fills · look-ahead tests
+  </text>
+  <text x="550" y="365" text-anchor="middle" font-family="Figtree, Helvetica, sans-serif" font-size="13" fill="#5C6B7A">
+    Future: swap provider / broker without rewriting strategies or risk
+  </text>
+  <text x="550" y="400" text-anchor="middle" font-family="Figtree, Helvetica, sans-serif" font-size="11" fill="#8A96A3">
+    Never strategy ’ broker. Always strategy ’ construction ’ risk ’ validation ’ broker.
+  </text>
+</svg>

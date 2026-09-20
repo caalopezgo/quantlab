@@ -1,0 +1,117 @@
+# Quant Lab V0.1 configuration.
+# Every important research and risk assumption lives here, not inside strategies.
+
+app:
+  name: Quant Lab
+  version: "0.1.0"
+  environment: research  # research | paper  — never live in V0.1
+
+paths:
+  cache_dir: data/cache
+  db_path: data/quantlab.db
+
+universe:
+  # Default research universe. Strategies read this; they do not hard-code tickers.
+  benchmark: VTI
+  safe_asset: SHY
+  strategy_tickers:
+    - VTI
+    - QQQ
+    - IWM
+    - EFA
+    - EEM
+    - TLT
+    - GLD
+  assets:
+    VTI:
+      name: Vanguard Total Stock Market ETF
+      asset_type: etf
+      description: Broad US equity market.
+    QQQ:
+      name: Invesco QQQ Trust
+      asset_type: etf
+      description: Large Nasdaq-listed growth/technology-heavy companies.
+    IWM:
+      name: iShares Russell 2000 ETF
+      asset_type: etf
+      description: US small-cap equities.
+    EFA:
+      name: iShares MSCI EAFE ETF
+      asset_type: etf
+      description: Developed international equities.
+    EEM:
+      name: iShares MSCI Emerging Markets ETF
+      asset_type: etf
+      description: Emerging-market equities.
+    TLT:
+      name: iShares 20+ Year Treasury Bond ETF
+      asset_type: etf
+      description: Long-duration US Treasury bonds.
+    GLD:
+      name: SPDR Gold Shares
+      asset_type: etf
+      description: Gold exposure.
+    SHY:
+      name: iShares 1-3 Year Treasury Bond ETF
+      asset_type: etf
+      description: Short-duration US Treasury bonds.
+
+data:
+  # Prices used for research are split- and dividend-adjusted (Yahoo auto_adjust).
+  # That series is total-return compatible. See quantlab/data/yahoo.py.
+  provider: yahoo
+  auto_adjust: true
+  timezone_policy: session_date  # store naive US equity session dates
+
+strategy:
+  buy_and_hold:
+    ticker: VTI
+  momentum_trend:
+    trend_window: 200          # trading days
+    momentum_window: 126       # trading days (~6 months)
+    selected_assets: 2
+    rebalance_frequency: monthly
+    safe_asset: SHY            # used when nothing qualifies; cash if unavailable
+
+portfolio:
+  method: equal_weight         # V0.1 only. Interface allows future methods.
+
+risk:
+  max_gross_exposure: 0.90
+  cash_buffer: 0.10
+  max_weight_per_asset: 0.50
+  max_positions: 8
+  allow_leverage: false
+  allow_shorting: false
+  # Reserved for later versions. Present so the schema is stable.
+  volatility_targeting: false
+  kill_switch: false
+
+paper:
+  starting_capital: 1000.0
+  account_name: paper_main
+  # Paper fills use the latest available close from the data provider.
+  # This is not a live quote.
+  fill_price: latest_available_close
+  allow_fractional_shares: true
+
+backtest:
+  initial_capital: 10000.0
+  transaction_cost_bps: 5.0    # 5 bps per notional traded, each side
+  trading_days_per_year: 252
+  risk_free_rate: 0.0
+  # Signal at close T is executed at the next session's OPEN.
+  execution: next_open
+  development:
+    start: "2010-01-01"
+    end: "2019-12-31"
+  validation:
+    start: "2020-01-01"
+    end: null                  # latest available
+  sanity:
+    max_implausible_total_return: 50.0   # 5000%
+    fail_on_negative_cash: true
+    fail_on_nan_equity: true
+
+logging:
+  level: INFO

@@ -1,0 +1,13 @@
+# Pinned for Streamlit Community Cloud and simple installs.
+# Keep roughly in sync with pyproject.toml.
+
+pandas>=2.1
+numpy>=1.26
+scipy>=1.11
+plotly>=5.18
+streamlit>=1.32
+yfinance>=0.2.40
+pydantic>=2.6
+pyyaml>=6.0
+python-dotenv>=1.0
+pyarrow>=14.0

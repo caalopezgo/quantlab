@@ -19,7 +19,7 @@ Stack: Python 3.11+, Pandas, NumPy, SciPy, Pydantic, SQLite, Streamlit, pytest.
 
 | Asset | URL |
 | --- | --- |
-| GitHub | _run `docs/PUBLISH_CHECKLIST.md` step 1_ |
+| GitHub | https://github.com/caalopezgo/quantlab |
 | Live demo | _run `docs/PUBLISH_CHECKLIST.md` step 2_ |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Case note | [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md) |
@@ -53,9 +53,9 @@ If asked about the sample backtest: show the comparison to buy-and-hold VTI, the
 - [x] GitHub Actions (`pytest`)
 - [x] Streamlit Cloud config (`requirements.txt`, `.streamlit/`)
 - [x] Local git commit on `main`
-- [ ] Public GitHub repository (`docs/PUBLISH_CHECKLIST.md`)
+- [x] Public GitHub repository: https://github.com/caalopezgo/quantlab
 - [ ] Deploy Streamlit Community Cloud from that repo
-- [ ] Paste live URLs into this file and the website
+- [ ] Paste live demo URL into this file and the website
 
 ---
 

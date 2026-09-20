@@ -26,7 +26,8 @@ This is not investment advice. A backtest is not evidence of future profitabilit
 | Look-ahead tests | `tests/test_lookahead.py` |
 | CI | `.github/workflows/ci.yml` |
 
-**Live demo:** deploy from GitHub with [`docs/DEPLOY.md`](docs/DEPLOY.md) (URL goes in `PORTFOLIO.md` after Cloud is live).
+**Live demo:** deploy from GitHub with [`docs/DEPLOY.md`](docs/DEPLOY.md) → then paste the URL in [`PORTFOLIO.md`](PORTFOLIO.md).  
+**Source:** https://github.com/caalopezgo/quantlab
 
 ## What V0.1 is
 

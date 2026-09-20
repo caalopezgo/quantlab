@@ -1,7 +1,10 @@
 # Website section — Quant Lab
 
 Paste or adapt this block into your personal site (Projects / Work).  
-Replace `GITHUB_URL` and `DEMO_URL` after publish.
+Replace `DEMO_URL` after Streamlit Cloud deploy. GitHub is live.
+
+**GitHub:** https://github.com/caalopezgo/quantlab  
+**Demo:** `DEMO_URL`
 
 ---
 
@@ -12,7 +15,7 @@ Personal quantitative research engine — hypothesis → backtest → risk → p
 
 Python · Pandas · Pydantic · SQLite · Streamlit · pytest  
 
-[GitHub](GITHUB_URL) · [Live demo](DEMO_URL)
+[GitHub](https://github.com/caalopezgo/quantlab) · [Live demo](DEMO_URL)
 
 ---
 
@@ -51,10 +54,10 @@ Python 3.11+, Pandas, NumPy, SciPy, Pydantic, Plotly, Streamlit, yfinance, SQLit
 
 #### Links
 
-- Source: `GITHUB_URL`  
+- Source: https://github.com/caalopezgo/quantlab  
 - Demo: `DEMO_URL`  
-- Architecture: `GITHUB_URL/blob/main/docs/ARCHITECTURE.md`  
-- Case note: `GITHUB_URL/blob/main/docs/CASE_NOTE.md`  
+- Architecture: https://github.com/caalopezgo/quantlab/blob/main/docs/ARCHITECTURE.md  
+- Case note: https://github.com/caalopezgo/quantlab/blob/main/docs/CASE_NOTE.md  
 
 #### Screenshot
 

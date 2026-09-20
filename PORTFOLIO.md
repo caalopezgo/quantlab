@@ -19,12 +19,13 @@ Stack: Python 3.11+, Pandas, NumPy, SciPy, Pydantic, SQLite, Streamlit, pytest.
 
 | Asset | URL |
 | --- | --- |
-| GitHub | _pending_ |
-| Live demo | _pending — Streamlit Community Cloud_ |
+| GitHub | _run `docs/PUBLISH_CHECKLIST.md` step 1_ |
+| Live demo | _run `docs/PUBLISH_CHECKLIST.md` step 2_ |
 | Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
 | Case note | [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md) |
 | Website copy | [`docs/WEBSITE_SECTION.md`](docs/WEBSITE_SECTION.md) |
 | Screenshots | [`docs/images/`](docs/images/) |
+| Publish steps | [`docs/PUBLISH_CHECKLIST.md`](docs/PUBLISH_CHECKLIST.md)
 
 ---
 
@@ -51,7 +52,8 @@ If asked about the sample backtest: show the comparison to buy-and-hold VTI, the
 - [x] Screenshots of Home + Research
 - [x] GitHub Actions (`pytest`)
 - [x] Streamlit Cloud config (`requirements.txt`, `.streamlit/`)
-- [ ] Public GitHub repository
+- [x] Local git commit on `main`
+- [ ] Public GitHub repository (`docs/PUBLISH_CHECKLIST.md`)
 - [ ] Deploy Streamlit Community Cloud from that repo
 - [ ] Paste live URLs into this file and the website
 

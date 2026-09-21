@@ -1,7 +1,6 @@
 # Case note — Momentum + Trend vs Buy & Hold VTI
 
-**One page.** For interviews and portfolio pages.  
-**Not a recommendation to invest.** Historical simulation only.
+Historical simulation only. Not a recommendation to invest.
 
 ---
 
@@ -58,17 +57,17 @@ Development vs validation can diverge; divergence is a warning about regime depe
 - Risk overlay changes the investable set vs pure strategy weights  
 - One hypothesis; no factor orthogonalization, vol targeting, or walk-forward yet  
 
-## Engineering takeaway (the interview point)
+## What this exercise shows
 
-The useful artifact is the **system**:
+The useful part is the **system** around the rule:
 
 - Owned backtester with an explicit time contract  
-- Look-ahead prevented in code and proven with synthetic tests  
+- Look-ahead prevented in code and covered by synthetic tests  
 - Risk as a separate layer that can override  
 - Broker abstraction with paper persistence  
-- UI that cannot smuggle trading logic  
+- UI that does not contain trading logic  
 
-A future live broker implements the same `Broker` interface; strategies stay untouched.
+A future live broker can implement the same `Broker` interface; strategies stay untouched.
 
 ---
 

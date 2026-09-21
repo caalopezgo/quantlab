@@ -1,8 +1,5 @@
 # Quant Lab
 
-> **For hiring managers (30 seconds).** Personal quantitative research engine: owned backtester, risk layer that can override strategies, paper broker behind a clean `Broker` interface, and tests that prove look-ahead bias cannot sneak in. Not an AI stock picker. Not a claim of trading edge.  
-> **Portfolio pack:** [`PORTFOLIO.md`](PORTFOLIO.md) · [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md) · [`docs/WEBSITE_SECTION.md`](docs/WEBSITE_SECTION.md)
-
 A personal quantitative research and paper-trading system.
 
 Quant Lab is not a stock picker and not a brokerage. It is a small, owned engine for stating a hypothesis, measuring it on historical data, applying risk constraints, and simulating execution. Version 0.1 is research plus paper trading only. It is designed so that a later live broker can be added without rewriting strategies, the backtester, portfolio construction, or the risk engine.
@@ -13,21 +10,16 @@ This is not investment advice. A backtest is not evidence of future profitabilit
 
 ![Quant Lab home](docs/images/home.png)
 
-![Architecture](docs/images/architecture.svg)
+## Docs
 
-## Portfolio highlights
-
-| Topic | Where to look |
+| Doc | Contents |
 | --- | --- |
-| System diagram | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) |
-| Research write-up (hypothesis → limits) | [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md) |
-| Copy for your website | [`docs/WEBSITE_SECTION.md`](docs/WEBSITE_SECTION.md) |
-| Deploy to Streamlit Cloud | [`docs/DEPLOY.md`](docs/DEPLOY.md) |
-| Look-ahead tests | `tests/test_lookahead.py` |
-| CI | `.github/workflows/ci.yml` |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | System map and extension points |
+| [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md) | Sample study: Momentum + Trend vs VTI |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Streamlit Community Cloud |
+| [`docs/images/`](docs/images/) | Screenshots and diagram |
 
-**Live demo:** deploy from GitHub with [`docs/DEPLOY.md`](docs/DEPLOY.md) → then paste the URL in [`PORTFOLIO.md`](PORTFOLIO.md).  
-**Source:** https://github.com/caalopezgo/quantlab
+**Repository:** https://github.com/caalopezgo/quantlab
 
 ## What V0.1 is
 

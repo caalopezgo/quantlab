@@ -1,6 +1,6 @@
 # Architecture — Quant Lab V0.1
 
-One-page map of the system for hiring managers and collaborators.
+System map for anyone reading the code.
 
 ## Principle
 
@@ -17,6 +17,8 @@ Brokers never choose what to buy.
 Risk can override a strategy.
 
 ## Diagram
+
+![Architecture](images/architecture.svg)
 
 ```mermaid
 flowchart TB
@@ -121,7 +123,7 @@ Missing prices are **not** forward-filled. Research calendar is an **inner join*
 
 Research prices: Yahoo `auto_adjust=True` (split- and dividend-adjusted; total-return compatible).
 
-## Testing posture
+## Testing
 
 - Synthetic offline fixtures (no Yahoo required for CI)  
 - Look-ahead suite is a hard gate  

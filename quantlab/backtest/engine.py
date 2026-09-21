@@ -76,24 +76,27 @@ class BacktestEngine:
         universe: list[str] | None = None,
         data_fetched_at: datetime | None = None,
     ) -> BacktestResult:
-        close = close.sort_index()
-        open_ = open_.reindex(close.index)
-        if close.empty:
+        """Run a backtest over an evaluation window.
+
+        ``close`` / ``open_`` may contain history *before* ``start``. That prior
+        history is used only for features and signals (warm-up). Accounting,
+        fills, and metrics begin at ``start`` (or the first panel date).
+        """
+        panel_close = close.sort_index()
+        panel_open = open_.reindex(panel_close.index)
+        if panel_close.empty:
             raise DataValidationError("backtest price panel is empty")
-        if open_.isna().any().any():
+        if panel_open.isna().any().any():
             raise DataValidationError("open panel has NaNs aligned to close; cannot execute at next open")
 
-        if start is not None:
-            close = close.loc[close.index >= pd.Timestamp(start)]
-            open_ = open_.loc[open_.index >= pd.Timestamp(start)]
-        if end is not None:
-            close = close.loc[close.index <= pd.Timestamp(end)]
-            open_ = open_.loc[open_.index <= pd.Timestamp(end)]
-        if close.empty:
-            raise DataValidationError("backtest window contains no sessions")
+        eval_start_ts = pd.Timestamp(start) if start is not None else panel_close.index.min()
+        eval_end_ts = pd.Timestamp(end) if end is not None else panel_close.index.max()
+        calendar = panel_close.index[(panel_close.index >= eval_start_ts) & (panel_close.index <= eval_end_ts)]
+        if len(calendar) == 0:
+            raise DataValidationError("backtest evaluation window contains no sessions")
 
-        calendar = close.index
-        tickers = list(universe or close.columns)
+        market_calendar = panel_close.index
+        tickers = list(universe or panel_close.columns)
         ledger = Ledger(initial_capital, allow_leverage=False, allow_shorting=False)
         pending_weights: dict[str, float] | None = None
         pending_signal_date: pd.Timestamp | None = None
@@ -113,19 +116,21 @@ class BacktestEngine:
             "Signals use split- and dividend-adjusted closes through T.",
             "Fills occur at the next session open. Same-session close fills are forbidden.",
             "Risk-free rate is explicit (default 0).",
+            "History before the evaluation start is warm-up only (features/signals), not PnL.",
         ]
 
         logger.info(
-            "backtest start strategy=%s sessions=%s capital=%.2f",
+            "backtest start strategy=%s sessions=%s capital=%.2f warmup_rows=%s",
             strategy.name,
             len(calendar),
             initial_capital,
+            int((panel_close.index < calendar[0]).sum()),
         )
 
         for ts in calendar:
             session = to_session_date(ts)
-            open_px = {c: float(open_.at[ts, c]) for c in close.columns}
-            close_px = {c: float(close.at[ts, c]) for c in close.columns}
+            open_px = {c: float(panel_open.at[ts, c]) for c in panel_close.columns}
+            close_px = {c: float(panel_close.at[ts, c]) for c in panel_close.columns}
             session_cost = 0.0
 
             if pending_weights is not None:
@@ -172,16 +177,16 @@ class BacktestEngine:
             weight_rows.append({t: snap.weights.get(t, 0.0) for t in tickers})
             holding_rows.append({t: ledger.quantity(t) for t in tickers})
 
-            should_signal = strategy.is_rebalance_date(calendar, ts) or (
+            should_signal = strategy.is_rebalance_date(market_calendar, ts) or (
                 strategy.rebalance_frequency is RebalanceFrequency.ONCE and not first_signal_done
             )
             if not first_signal_done:
-                # First session: generate the initial book. It still executes next open.
+                # First evaluation session: generate the initial book. It still executes next open.
                 should_signal = True
 
             if should_signal:
                 asof = session
-                hist = close.loc[:ts]
+                hist = panel_close.loc[:ts]
                 signals = strategy.generate_signals(hist, asof)
                 proposed = self.constructor.construct(signals, asof)
                 if self.apply_risk:
@@ -249,7 +254,6 @@ class BacktestEngine:
             allow_leverage=False,
         )
 
-        # Buy & hold benchmark comparison is done by the research service, not here.
         data_asof = to_session_date(calendar[-1])
         assumptions = BacktestAssumptions(
             strategy_name=strategy.name,

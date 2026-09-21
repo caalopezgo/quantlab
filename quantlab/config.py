@@ -57,6 +57,9 @@ class BacktestConfig:
     max_implausible_total_return: float
     fail_on_negative_cash: bool
     fail_on_nan_equity: bool
+    walk_forward_test_years: float = 2.0
+    walk_forward_step_years: float = 2.0
+    walk_forward_min_history_sessions: int = 252
 
 
 @dataclass(frozen=True)
@@ -178,6 +181,11 @@ def load_config(path: str | Path | None = None) -> AppConfig:
             max_implausible_total_return=float(backtest["sanity"]["max_implausible_total_return"]),
             fail_on_negative_cash=bool(backtest["sanity"]["fail_on_negative_cash"]),
             fail_on_nan_equity=bool(backtest["sanity"]["fail_on_nan_equity"]),
+            walk_forward_test_years=float(backtest.get("walk_forward", {}).get("test_years", 2.0)),
+            walk_forward_step_years=float(backtest.get("walk_forward", {}).get("step_years", 2.0)),
+            walk_forward_min_history_sessions=int(
+                backtest.get("walk_forward", {}).get("min_history_sessions", 252)
+            ),
         ),
         log_level=os.environ.get("QUANTLAB_LOG_LEVEL") or str(raw.get("logging", {}).get("level", "INFO")),
     )

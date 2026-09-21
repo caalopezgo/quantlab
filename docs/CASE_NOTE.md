@@ -55,7 +55,7 @@ Development vs validation can diverge; divergence is a warning about regime depe
 - Next-open fill model; flat bps costs; no impact / partial fills  
 - Small ETF universe; equal weight only  
 - Risk overlay changes the investable set vs pure strategy weights  
-- One hypothesis; no factor orthogonalization, vol targeting, or walk-forward yet  
+- One hypothesis; no factor orthogonalization or vol targeting yet. Frozen-parameter walk-forward is available in Research.  
 
 ## What this exercise shows
 

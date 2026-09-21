@@ -86,7 +86,7 @@ flowchart TB
 | `quantlab/strategies` | Intent only: Buy & Hold, Momentum + Trend |
 | `quantlab/portfolio` | Equal-weight construction, ledger accounting |
 | `quantlab/risk` | Review / resize / explain |
-| `quantlab/backtest` | Owned event loop, next-open fills, metrics, sanity |
+| `quantlab/backtest` | Owned event loop, next-open fills, warm-up windows, walk-forward folds, metrics, sanity |
 | `quantlab/brokers` | `Broker` ABC + `PaperBroker` |
 | `quantlab/storage` | SQLite schema + repositories |
 | `quantlab/services` | App workflows for the UI |

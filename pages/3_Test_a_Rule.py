@@ -34,8 +34,9 @@ page_hero(
 )
 disclaimer()
 callout(
-    "<strong>How to read this page.</strong> Run a simulation. Look at growth, drawdowns, and the "
-    "development vs validation split. Do <em>not</em> crown a winner. Parameters stay frozen between periods."
+    "<strong>How to read this page.</strong> Run a simulation. Look at growth, drawdowns, the "
+    "development vs validation split, and walk-forward folds. Do <em>not</em> crown a winner. "
+    "Parameters stay frozen between periods."
 )
 
 strategy_name = st.selectbox(
@@ -105,7 +106,7 @@ if run:
             strategy = ctx.momentum_trend(
                 trend_window=trend_window, momentum_window=mom_window, selected_assets=k
             )
-        with st.spinner("Replaying history (strategy, benchmark, development, validation)…"):
+        with st.spinner("Replaying history (strategy, benchmark, development, validation, walk-forward)…"):
             comparison = ctx.research.compare_to_buy_and_hold(
                 strategy,
                 close,
@@ -118,6 +119,9 @@ if run:
                 development_end=ctx.config.backtest.development_end,
                 validation_start=ctx.config.backtest.validation_start,
                 validation_end=end,
+                walk_forward_test_years=ctx.config.backtest.walk_forward_test_years,
+                walk_forward_step_years=ctx.config.backtest.walk_forward_step_years,
+                walk_forward_min_history_sessions=ctx.config.backtest.walk_forward_min_history_sessions,
             )
     except QuantLabError as exc:
         st.error(str(exc))
@@ -178,6 +182,52 @@ if rows:
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 for note in comparison.notes:
     st.caption(note)
+
+wf = comparison.walk_forward
+section(
+    "Walk-forward",
+    "Same rule, successive out-of-sample windows",
+    (
+        f"{ctx.config.backtest.walk_forward_test_years:.0f}-year test windows, "
+        f"step {ctx.config.backtest.walk_forward_step_years:.0f} years. "
+        "Parameters stay frozen — this is an honesty check, not a search for better knobs."
+    ),
+)
+if wf is None or not wf.folds:
+    st.caption(
+        "Not enough history in this date range to form walk-forward folds "
+        "(need warm-up plus at least one full test window)."
+    )
+else:
+    summary = wf.summary_frame()
+    display = summary.copy()
+    for col in ("strategy_cagr", "benchmark_cagr", "strategy_max_dd", "benchmark_max_dd"):
+        if col in display.columns:
+            display[col] = display[col].map(lambda x: fmt_pct(x) if x == x else "n/a")
+    for col in ("strategy_sharpe", "benchmark_sharpe"):
+        if col in display.columns:
+            display[col] = display[col].map(lambda x: f"{x:.2f}" if x == x else "n/a")
+    for col in ("strategy_end", "benchmark_end"):
+        if col in display.columns:
+            display[col] = display[col].map(lambda x: fmt_money(x) if x == x else "n/a")
+    display = display.rename(
+        columns={
+            "fold": "Fold",
+            "test_start": "From",
+            "test_end": "To",
+            "strategy_cagr": f"{label} CAGR",
+            "strategy_sharpe": f"{label} Sharpe",
+            "strategy_max_dd": f"{label} max DD",
+            "strategy_end": f"{label} end",
+            "benchmark_cagr": "VTI CAGR",
+            "benchmark_sharpe": "VTI Sharpe",
+            "benchmark_max_dd": "VTI max DD",
+            "benchmark_end": "VTI end",
+        }
+    )
+    st.dataframe(display, use_container_width=True, hide_index=True)
+    for note in wf.notes:
+        st.caption(note)
 
 with st.expander("Assumptions used in this run", expanded=False):
     a = s.assumptions

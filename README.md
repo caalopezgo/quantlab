@@ -29,6 +29,7 @@ This is not investment advice. A backtest is not evidence of future profitabilit
 - A risk engine that can override a strategy
 - A `PaperBroker` with SQLite persistence and a $1,000 experimental bankroll
 - A Streamlit UI that contains **no** financial logic
+- Frozen-parameter **walk-forward** folds (honesty check across successive OOS windows; not a parameter search)
 
 ## What V0.1 is not
 
@@ -187,7 +188,7 @@ Write-up of the study: [`docs/CASE_NOTE.md`](docs/CASE_NOTE.md).
 
 ## Configuration
 
-`config/default.yaml` holds the universe, lookbacks, risk caps, paper bankroll, costs, and development/validation dates. Important assumptions are not hidden in code.
+`config/default.yaml` holds the universe, lookbacks, risk caps, paper bankroll, costs, development/validation dates, and walk-forward window sizes. Important assumptions are not hidden in code.
 
 Starter universe:
 
@@ -216,9 +217,9 @@ No leverage, no shorting, no options. The paper broker rejects impossible orders
 
 ## Roadmap
 
-**V0.1** — Quant core, backtesting, risk, signals, paper broker, basic UI.
+**V0.1** — Quant core, backtesting, risk, signals, paper broker, walk-forward honesty check, basic UI.
 
-**V0.2** — Better market data, portfolio analytics, additional strategies, walk-forward analysis, ensembles.
+**V0.2** — Better market data, portfolio analytics, additional strategies, ensembles.
 
 **V0.3** — Alternative data, news, fundamentals, LLM-derived structured signals, ML strategies.
 

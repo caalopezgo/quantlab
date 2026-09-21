@@ -11,8 +11,13 @@ import pandas as pd
 
 from quantlab.backtest.engine import BacktestEngine
 from quantlab.backtest.results import BacktestResult
+from quantlab.backtest.walk_forward import (
+    FoldResult,
+    WalkForwardResult,
+    generate_rolling_folds,
+)
 from quantlab.data.base import MarketDataProvider
-from quantlab.data.validation import align_panel, require_history_length
+from quantlab.data.validation import align_panel
 from quantlab.domain.exceptions import DataValidationError
 from quantlab.storage.repositories import BacktestRepository
 from quantlab.strategies.base import Strategy
@@ -32,6 +37,7 @@ class ComparisonResult:
     close: pd.DataFrame
     open_: pd.DataFrame
     notes: list[str]
+    walk_forward: WalkForwardResult | None = None
 
 
 class ResearchService:
@@ -97,6 +103,77 @@ class ResearchService:
             )
         return result
 
+    def walk_forward(
+        self,
+        strategy: Strategy,
+        close: pd.DataFrame,
+        open_: pd.DataFrame,
+        *,
+        initial_capital: float,
+        benchmark_ticker: str,
+        test_years: float = 2.0,
+        step_years: float = 2.0,
+        min_history_sessions: int | None = None,
+    ) -> WalkForwardResult:
+        """Evaluate the same frozen rule on rolling out-of-sample windows."""
+        if benchmark_ticker not in close.columns:
+            raise DataValidationError(f"benchmark {benchmark_ticker} missing from panel")
+
+        required = max(int(strategy.required_history()), 2)
+        history_floor = max(required, int(min_history_sessions or required))
+        folds = generate_rolling_folds(
+            close.index,
+            test_years=test_years,
+            step_years=step_years,
+            min_history_sessions=history_floor,
+            trading_days_per_year=self.engine.trading_days_per_year,
+        )
+        benchmark = BuyAndHoldStrategy(ticker=benchmark_ticker)
+        fold_results: list[FoldResult] = []
+        logger.info(
+            "walk_forward strategy=%s folds=%s test_years=%s step_years=%s",
+            strategy.name,
+            len(folds),
+            test_years,
+            step_years,
+        )
+        for fold in folds:
+            # Pass the full panel so features have warm-up; evaluate only inside the fold.
+            strat = self.engine.run(
+                strategy=strategy,
+                close=close,
+                open_=open_,
+                start=fold.test_start,
+                end=fold.test_end,
+                initial_capital=initial_capital,
+            )
+            bench = self.benchmark_engine.run(
+                strategy=benchmark,
+                close=close,
+                open_=open_,
+                start=fold.test_start,
+                end=fold.test_end,
+                initial_capital=initial_capital,
+                universe=[benchmark_ticker],
+            )
+            fold_results.append(FoldResult(fold=fold, strategy=strat, benchmark=bench))
+
+        notes = [
+            "Walk-forward here uses frozen parameters — it is not a search for better knobs.",
+            "Each fold is an out-of-sample window. Warm-up history before the fold is for features only.",
+            "Uneven fold results are expected; they do not authorize retuning after the fact.",
+            "Buy & Hold benchmark remains fully invested (no cash buffer).",
+        ]
+        return WalkForwardResult(
+            folds=fold_results,
+            strategy_name=strategy.name,
+            strategy_parameters=strategy.parameters(),
+            test_years=test_years,
+            step_years=step_years,
+            min_history_sessions=history_floor,
+            notes=notes,
+        )
+
     def compare_to_buy_and_hold(
         self,
         strategy: Strategy,
@@ -111,6 +188,10 @@ class ResearchService:
         development_end: date,
         validation_start: date,
         validation_end: date | None,
+        run_walk_forward: bool = True,
+        walk_forward_test_years: float = 2.0,
+        walk_forward_step_years: float = 2.0,
+        walk_forward_min_history_sessions: int = 252,
     ) -> ComparisonResult:
         if benchmark_ticker not in close.columns:
             raise DataValidationError(f"benchmark {benchmark_ticker} missing from panel")
@@ -137,6 +218,7 @@ class ResearchService:
 
         dev = val = dev_b = val_b = None
         if _window(development_start, development_end):
+            # Keep full panel for warm-up; evaluate only inside the window.
             dev = self.engine.run(
                 strategy=strategy,
                 close=close,
@@ -173,8 +255,26 @@ class ResearchService:
                 universe=[benchmark_ticker],
             )
 
+        wf: WalkForwardResult | None = None
+        if run_walk_forward:
+            try:
+                wf = self.walk_forward(
+                    strategy,
+                    close,
+                    open_,
+                    initial_capital=initial_capital,
+                    benchmark_ticker=benchmark_ticker,
+                    test_years=walk_forward_test_years,
+                    step_years=walk_forward_step_years,
+                    min_history_sessions=max(
+                        walk_forward_min_history_sessions, strategy.required_history()
+                    ),
+                )
+            except DataValidationError as exc:
+                logger.warning("walk-forward skipped: %s", exc)
+
         notes = [
-            "Parameters are unchanged between development and validation.",
+            "Parameters are unchanged between development, validation, and walk-forward folds.",
             "Good historical performance does not establish future profitability.",
             "A strategy that works in development and fails in validation may be overfit.",
             "Buy & Hold VTI is fully invested and is not passed through the risk engine, "
@@ -191,4 +291,5 @@ class ResearchService:
             close=close,
             open_=open_,
             notes=notes,
+            walk_forward=wf,
         )

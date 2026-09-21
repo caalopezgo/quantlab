@@ -108,6 +108,11 @@ backtest:
   validation:
     start: "2020-01-01"
     end: null                  # latest available
+  walk_forward:
+    # Frozen-parameter rolling OOS windows. Not a parameter search.
+    test_years: 2.0
+    step_years: 2.0
+    min_history_sessions: 252
   sanity:
     max_implausible_total_return: 50.0   # 5000%
     fail_on_negative_cash: true

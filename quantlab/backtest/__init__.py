@@ -3,5 +3,12 @@
 from quantlab.backtest.engine import BacktestEngine
 from quantlab.backtest.execution_model import NextOpenExecutionModel
 from quantlab.backtest.results import BacktestResult
+from quantlab.backtest.walk_forward import WalkForwardResult, generate_rolling_folds
 
-__all__ = ["BacktestEngine", "NextOpenExecutionModel", "BacktestResult"]
+__all__ = [
+    "BacktestEngine",
+    "NextOpenExecutionModel",
+    "BacktestResult",
+    "WalkForwardResult",
+    "generate_rolling_folds",
+]
